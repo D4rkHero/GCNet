@@ -7,11 +7,12 @@ The **PacketLib** namespace gives an I/O packet managing by providing compressio
 ## Example
 Here is a very simple code snippet showing off the ease of use of the GCNet Library.
 ```C#
-InPacket packet = new InPacket(receivedData, cryptoSession); // Processes the data
+InPacket packet = new InPacket(receivedData, cryptoSession); // Processes the received data
 PayloadReader reader = new PayloadReader(packet.PayloadData); // Creates a reader
 
-// Now you can read the decrypted packet data
+// Now you can read the decrypted payload data
 int a = reader.ReadInt32();
 ```
+For more detailed information, see the [documentation](./docs).
 ## Build
 To build the project, you should use Visual Studio 2015 with .NET Framework 4.5.2.
