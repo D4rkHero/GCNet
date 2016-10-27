@@ -5,7 +5,7 @@ The **CoreLib** namespace provides some core features like packet encryption and
 
 The **PacketLib** namespace gives an I/O packet managing by providing compression, data reading and writing in addition to the own cryptography functions.
 # Example
-Here is a very simple code snippet showing off the ease of use of the GCNet Library.
+Here is a very simple code snippet demonstrating the ease of use of the GCNet Library.
 ```C#
 InPacket packet = new InPacket(receivedData, cryptoSession); // Processes the received data
 PayloadReader reader = new PayloadReader(packet.PayloadData); // Creates a reader
