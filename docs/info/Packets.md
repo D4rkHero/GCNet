@@ -19,18 +19,27 @@ C2 D1 05 A7 1C FD 9E 1B 69 A3 76 CE 3A 9D 69 21 21 9B 82 D7 00 DF E3 57 33 57 A6
 
 Now let's analyze its parts:
 ### Header
-> 6A 00 E7 8E 02 00 00 00 58 58 58 58 58 58 58 58 
+> 6A 00 E7 8E 02 00 00 00 58 58 58 58 58 58 58 58
 
 In all packets, it represents the first 16 bytes of the received *buffer*. It contains some basic informations about the packet, which will be explained in detail below.
 > Note: all the data in the header is written in the [little-endian](https://en.wikipedia.org/wiki/Endianness#Little-endian) format.
 
 ***Size***
+> ***6A 00*** E7 8E 02 00 00 00 58 58 58 58 58 58 58 58
 
-> ***6A 00*** E7 8E 02 00 00 00 58 58 58 58 58 58 58 58 
-
-As the name suggests, it represents the packet's buffer length. It is in little-endian format, so it's actually *00 6A*, which, in decimal, is 106. If you count each byte of our sniffed packet's data, you will realize that it contains exactly 106 bytes. :smiley:
-***Prefix*** 
-
+As the name suggests, it represents the packet's buffer length. It is in little-endian format, so it's actually _00 6A_, which, in decimal, is 106. If you count each byte of our sniffed packet's data, you will realize that it contains exactly 106 bytes. :smiley:
+___
+***Prefix***
 > 6A 00 ***E7 8E*** 02 00 00 00 58 58 58 58 58 58 58 58
 
-We're now faced with the *prefix*. These 2 bytes are present in all the packets and contains a random value, with exception of the packet in which the session keys are defined, where the prefix is represented by *00 00*.
+We're now faced with the *prefix*. These 2 bytes are present in all the packets and contains a random value which is generated at the beginning of the session and used for all the following packets. There's only one exception: the packet in which the session keys are defined, where the prefix is represented by _00 00_ (this packet will be particularly discussed later).
+___
+***Count***
+> 6A 00 E7 8E ***02 00 00 00*** 58 58 58 58 58 58 58 58
+
+It's a 32-bit integer that represents the count of sent packets within a session. In our case, the packet count is 2 since it's _00 00 00 02_. Note that both client and server have their own counts.
+___
+***IV (Initialization Vector)***
+> 6A 00 E7 8E 02 00 00 00 ***58 58 58 58 58 58 58 58***
+
+It's the IV used to encrypt the packet's payload. Each packet has its own generated IV, which consists on 8 bytes equal ranging from _00_ to _FF_ in hex values. You should take a look at the [encription section]() to have a better understanding of this concept.
