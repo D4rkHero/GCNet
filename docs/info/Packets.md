@@ -19,7 +19,13 @@ C2 D1 05 A7 1C FD 9E 1B 69 A3 76 CE 3A 9D 69 21 21 9B 82 D7 00 DF E3 57 33 57 A6
 
 Now let's analyze its parts:
 #### Header
-> 6A 00 E7 8E 02 00 00 00 58 58 58 58 58 58 58 58 
+> ***6A 00 E7 8E 02 00 00 00 58 58 58 58 58 58 58 58*** 
 
 In all packets, it represents the first 16 bytes of the received *buffer*. It contains some basic informations about the packet, which will be explained in detail below.
 > Note: all the data in the header is written in the [little-endian](https://en.wikipedia.org/wiki/Endianness#Little-endian) format.
+
+* **Size**
+
+> ***6A 00*** E7 8E 02 00 00 00 58 58 58 58 58 58 58 58 
+
+As the name suggests, it represents the total packet *buffer* length.
