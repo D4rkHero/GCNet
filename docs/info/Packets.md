@@ -1,12 +1,12 @@
 # The Grand Chase's Networking
 This topic will cover the Grand Chase's networking by explaining the packets' structure, encryption, authentication, compression and so on. It's important to be aware of the aspects discussed here to have a good understanding of the networking of Grand Chase as well as the GCNet Library.
-## Summary
+## **Summary**
 * The Overall Structure
 * The Encryption
 * The Payload
 * The "First" Packet
 
-## The Overall Structure
+## **The Overall Structure**
 In Grand Chase, the packets are divided primarily into three sections: header, payload and authentication code. Let's explain them one by one.
 
 > For demonstration purposes, we will be using the SHA_FILENAME_LIST acknowledge packet (ID: 0x001C).
@@ -63,5 +63,5 @@ Normally, a MD5-HMAC would have a size of 16 bytes. But if we take a look at our
 
 Above, you can see the entire HMAC (everything) compared to the part present in the packet (bold).
 
-## The Encryption
+## **The Encryption**
 Under construction!
