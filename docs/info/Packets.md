@@ -4,6 +4,7 @@ This topic will cover the Grand Chase's networking by explaining the packets' st
 * The Overall Structure
 * The Encryption
 * The Payload
+* The "First" Packet
 
 ## The Overall Structure
 In Grand Chase, the packets are divided primarily into three sections: header, payload and authentication code. Let's explain them one by one.
@@ -42,4 +43,9 @@ ___
 ***IV (Initialization Vector)***
 > 6A 00 E7 8E 02 00 00 00 ***58 58 58 58 58 58 58 58***
 
-It's the IV used to encrypt the packet's payload. Each packet has its own generated IV, which consists on 8 bytes equal ranging from _00_ to _FF_ in hex values. You should take a look at the [encription section]() to have a better understanding of this concept.
+It's the IV used to encrypt the packet's payload. Each packet has its own generated IV, which consists on 8 bytes equal ranging from _00_ to _FF_ in hex values. You should take a look at the [encryption section]() to have a better understanding of this concept.
+___
+### Payload (encrypted)
+> CD 05 A5 3D 7B 8C 1D CD 03 15 B1 DE 85 36 72 D9 1F B6 03 7D 77 5A 01 BE 78 D4 0A 22 EB 63 BB D1 77 D2 C6 9F DB 17 BC 0A E2 CF D8 75 B2 9E 2E 30 DD 24 3E AA 3E 5B 90 FE 61 F2 C2 D1 05 A7 1C FD 9E 1B 69 A3 76 CE 3A 9D 69 21 21 9B 82 D7 00 DF
+
+This is the main part of the packet. At first sight, it's encrypted and doesn't reveal much, but when decrypted, contains the effective data, the one that tell us something relevant such as the login inputted by the user or the information of the players inside a dungeon room. Due to its importance, the payload will be discussed in its [own]() section. Like the payload, the [encryption]() will be explained separately.
