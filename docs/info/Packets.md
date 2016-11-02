@@ -1,8 +1,8 @@
 # The Grand Chase's Networking
 This topic will cover the Grand Chase's networking by explaining the packets' structure, encryption, authentication, compression and so on. It's important to be aware of the aspects discussed here to have a good understanding of the networking of Grand Chase as well as the GCNet Library.
 ## **Summary**
-* The Overall Structure
-* The Encryption
+* [The Overall Structure](https://github.com/syntax-dev-br/GCNet/blob/doc-test/docs/info/Packets.md#the-overall-structure)
+* [The Encryption](https://github.com/syntax-dev-br/GCNet/blob/doc-test/docs/info/Packets.md#the-encryption)
 * The Payload
 * The "First" Packet
 
@@ -48,7 +48,7 @@ ___
 ### Payload (encrypted)
 > CD 05 A5 3D 7B 8C 1D CD 03 15 B1 DE 85 36 72 D9 1F B6 03 7D 77 5A 01 BE 78 D4 0A 22 EB 63 BB D1 77 D2 C6 9F DB 17 BC 0A E2 CF D8 75 B2 9E 2E 30 DD 24 3E AA 3E 5B 90 FE 61 F2 C2 D1 05 A7 1C FD 9E 1B 69 A3 76 CE 3A 9D 69 21 21 9B 82 D7 00 DF
 
-Located between the 16 first (header) and the 10 last (auth code) bytes, this is the main part of the packet. At first sight, it's encrypted and doesn't reveal much, but when decrypted, contains the effective data, the one that tell us something relevant such as the login inputted by the user or the information of the players inside a dungeon room. Due to its importance, the payload will be discussed in its [own]() section and likewise will be the [encryption]().
+Located between the 16 first (header) and the 10 last (auth code) bytes, this is the main part of the packet. At first sight, it's encrypted and doesn't reveal much, but when decrypted, contains the effective data, the one that tell us something relevant such as the login inputted by the user or the information of the players inside a dungeon room. Due to its importance, the payload will be discussed in its [own]() section and likewise will be the [encryption](https://github.com/syntax-dev-br/GCNet/blob/doc-test/docs/info/Packets.md#the-encryption).
 
 ### Authentication Code
 > E3 57 33 57 A6 79 A3 F6 53 57
@@ -64,4 +64,6 @@ Normally, a MD5-HMAC would have a size of 16 bytes. But if we take a look at our
 Above, you can see the entire HMAC (everything) compared to the part present in the packet (bold).
 
 ## **The Encryption**
-Under construction!
+> Note: for better understanding, it's highly recommended that you read the content of the links provided in this section.
+
+The payloads of the Grand Chase's packets are encrypted using the [DES algorithm](https://en.wikipedia.org/wiki/Data_Encryption_Standard) through the [CBC mode](https://en.wikipedia.org/wiki/Block_cipher_mode_of_operation#Cipher_Block_Chaining_.28CBC.29) (Cipher Block Chaining mode). Thus, in the case of the Grand Chase, the payload data is processed in blocks of 8 bytes each. But what if the size of our data is not divisible by 8? That's what we will see below.
