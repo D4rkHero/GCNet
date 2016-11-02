@@ -3,7 +3,7 @@ This topic will cover the Grand Chase's networking by explaining the packets' st
 ## **Summary**
 * [The Overall Structure](https://github.com/syntax-dev-br/GCNet/blob/doc-test/docs/info/Packets.md#the-overall-structure)
 * [The Encryption](https://github.com/syntax-dev-br/GCNet/blob/doc-test/docs/info/Packets.md#the-encryption)
-* The Payload
+* [The Payload](https://github.com/syntax-dev-br/GCNet/blob/doc-test/docs/info/Packets.md#the-payload)
 * The "First" Packet
 
 ## **The Overall Structure**
@@ -70,7 +70,7 @@ The payloads of the Grand Chase's packets are encrypted using the [DES algorithm
 
 The encryption process, as well as the decryption, once DES is a symmetric key algorithm, takes an _IV_, a _key_ and a _plaintext_.
 * As pointed before, the IV is generated for each packet and is sent together with it;
-* The encryption key is defined at the start of the session;
+* The encryption key is defined at the start of the session like the auth key;
 * The plaintext is the unencrypted payload;
 
 The data is processed in blocks of 8 bytes each. But what if the size of our data is not divisible by 8? That's what we will see below.
@@ -101,7 +101,7 @@ else
 {
   paddingLength = 8 + distance;
 }
-for (byte i = 0; i < paddingLength; i++)
+for (byte i = 0; i < (paddingLength - 1); i++)
 {
   padding[i] = i;
 }
@@ -119,3 +119,7 @@ And here's a table with all the 8 possible paddings for the payloads of the game
 | 5                 | 5              | ***00 01 02 03 03***                |
 | 6                 | 6              | ***00 01 02 03 04 04***             |
 | 7                 | 7              | ***00 01 02 03 04 05 05***          |
+
+## **The Payload**
+
+[Under construction!]
