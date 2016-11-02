@@ -66,4 +66,4 @@ Above, you can see the entire HMAC (everything) compared to the part present in 
 ## **The Encryption**
 > Note: for better understanding, it's highly recommended that you read the content of the links provided in this section.
 
-The payloads of the Grand Chase's packets are encrypted using the [DES algorithm](https://en.wikipedia.org/wiki/Data_Encryption_Standard) through the [CBC mode](https://en.wikipedia.org/wiki/Block_cipher_mode_of_operation#Cipher_Block_Chaining_.28CBC.29) (Cipher Block Chaining mode). Thus, in the case of the Grand Chase, the payload data is processed in blocks of 8 bytes each. But what if the size of our data is not divisible by 8? That's what we will see below.
+The payloads of the Grand Chase's packets are encrypted using the [DES algorithm](https://en.wikipedia.org/wiki/Data_Encryption_Standard) through the [CBC mode](https://en.wikipedia.org/wiki/Block_cipher_mode_of_operation#Cipher_Block_Chaining_.28CBC.29) (Cipher Block Chaining mode). Thus, the payload data is processed in blocks of 8 bytes each. But what if the size of our data is not divisible by 8? That's what we will see below.
