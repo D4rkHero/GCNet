@@ -9,7 +9,7 @@ This topic will cover the Grand Chase's networking by explaining the packets' st
 ## **The Overall Structure**
 In Grand Chase, the packets are divided primarily into three sections: header, payload and authentication code. Let's explain them one by one.
 
-> For demonstration purposes, we will be using the SHA_FILENAME_LIST acknowledge packet (ID: 0x001C).
+> For demonstration purposes, we will be using the acknowledgement packet SHA_FILENAME_LIST (ID: 0x001C).
 
 If we had sniffed this packet, its raw data would look like this:
 ```
@@ -28,7 +28,7 @@ In all packets, it represents the first 16 bytes of the received *buffer*. It co
 ***Size***
 > ***6A 00*** E7 8E 02 00 00 00 58 58 58 58 58 58 58 58
 
-As the name suggests, it represents the packet's buffer length. It is in little-endian format, so it's actually _00 6A_, which, in decimal, is 106. If you count each byte of our sniffed packet's data, you will realize that it contains exactly 106 bytes. :smiley:
+As the name suggests, it represents the packet's buffer length. It is in little-endian format, so it's actually _00 6A_, which, in decimal, is _106_. If you count each byte of our sniffed packet's data, you will realize that it contains exactly 106 bytes. :smiley:
 ___
 ***Prefix***
 > 6A 00 ***E7 8E*** 02 00 00 00 58 58 58 58 58 58 58 58
@@ -44,7 +44,7 @@ ___
 > 6A 00 E7 8E 02 00 00 00 ***58 58 58 58 58 58 58 58***
 
 It's the IV used to encrypt the packet's payload. Each packet has its own generated IV, which consists on 8 bytes equal ranging from _00_ to _FF_ in hex values. You should take a look at the [encryption section]() to have a better understanding of this concept.
-___
+
 ### Payload (encrypted)
 > CD 05 A5 3D 7B 8C 1D CD 03 15 B1 DE 85 36 72 D9 1F B6 03 7D 77 5A 01 BE 78 D4 0A 22 EB 63 BB D1 77 D2 C6 9F DB 17 BC 0A E2 CF D8 75 B2 9E 2E 30 DD 24 3E AA 3E 5B 90 FE 61 F2 C2 D1 05 A7 1C FD 9E 1B 69 A3 76 CE 3A 9D 69 21 21 9B 82 D7 00 DF
 
@@ -83,7 +83,7 @@ The whole thing you see above is the decrypted payload from our packet, but for 
 Let's now analyze our payload individually. Without padding, it would be 74 bytes long, but 74 is not divisible by 8. The next number divisible by 8 after 74 is 80, so our padding should be 6 bytes long (74 + _6_ = 80). Then we start to count: 00, 01, 02, 03, 04 and 04 again. The last byte of the padding is always equal to the penultimate byte. 
 
 After this all, we now have ***00 01 02 03 04 04***: a 6-bytes long padding.
-
+___
 ***The Padding Algorithm***
 
 As you may have thought, it is impossible that the padding has the last byte equal to the penultimate if, for example, it is 1 byte long. Let's explain the algorithm a little better now.
@@ -122,4 +122,29 @@ And here's a table with all the 8 possible paddings for the payloads of the game
 
 ## **The Payload**
 
+What you see below is the decrypted payload of our packet (now with the padding removed).
+```
+00 1C 00 00 00 40 00 00 00 00 03 00 00 00 0C 61 00 69 00 2E 00 6B 00 6F 00 6D 00 00 00 00 10 6D 00 61 00 69 00 
+6E 00 2E 00 65 00 78 00 65 00 00 00 00 14 73 00 63 00 72 00 69 00 70 00 74 00 2E 00 6B 00 6F 00 6D 00 00 00 00
+```
+Like the packet buffer, the decrypted payload has its sections: the header, the content and the null bytes padding. Again, let's explain them one by one.
+
+### Header
+> 00 1C 00 00 00 40 00
+
+The payload header contains three essential informations: packet ID, content size and compression flag. Next, we will take a closer look at these values.
+> Note: unlike the header, all the data in the payload is written in the [big-endian](https://en.wikipedia.org/wiki/Endianness#Big-endian) format.
+
+***ID***
+> ***00 1C*** 00 00 00 40 00
+
+The ID, as the name suggests, is the packet identifier. It indicates what the packet is meant for, what it is. 
+
+For example, the packet with the ID 0x0001 is the packet in which the session keys are defined; the one with the ID 0x001C is the acknowledgement packet SHA_FILENAME_LIST, which serves to inform the client about the files which will be verified through SHA checksum.
+___
+***Content Size***
+> 00 1C ***00 00 00 40*** 00
+
+This is the size in bytes of the _content_ of the payload. In our case, it is _00 00 00 40_ in hex values, denoting that the size is _64_ in decimal. Check for yourself: count each byte from the 8th to the 4th last byte. Your count should reach 64.
+___
 [Under construction!]
