@@ -184,8 +184,10 @@ Let's take a look at one compressed payload.
 
 (As you can see in the bytes in red, the compression flag is _true_ and the zlib header is present)
 
-Actually, only the portion in bold is compressed: the header plus 4 bytes remains uncompressed, as well as the _00 00 00_ padding at the end.
+Actually, only the highlighted portion is compressed: the header plus 4 bytes remains uncompressed, as well as the _00 00 00_ padding at the end.
 
 After the data is decompressed, it "become a normal packet" and may be read normally.
+
+
 
 [Under construction!]
