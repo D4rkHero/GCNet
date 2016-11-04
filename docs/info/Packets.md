@@ -25,6 +25,7 @@ Now let's analyze its parts:
 In all packets, it represents the first 16 bytes of the received *buffer*. It contains some basic informations about the packet, which will be explained in detail below.
 > Note: all the data in the header is written in the [little-endian](https://en.wikipedia.org/wiki/Endianness#Little-endian) format.
 
+___
 ***Size***
 > ***6A 00*** E7 8E 02 00 00 00 58 58 58 58 58 58 58 58
 
@@ -74,7 +75,7 @@ The encryption process, as well as the decryption, once DES is a symmetric key a
 * The plaintext is the unencrypted payload;
 
 The data is processed in blocks of 8 bytes each. But what if the size of our data is not divisible by 8? That's what we will see below.
-
+___
 ***Padding***
 > 00 1C 00 00 00 40 00 00 00 00 03 00 00 00 0C 61 00 69 00 2E 00 6B 00 6F 00 6D 00 00 00 00 10 6D 00 61 00 69 00 6E 00 2E 00 65 00 78 00 65 00 00 00 00 14 73 00 63 00 72 00 69 00 70 00 74 00 2E 00 6B 00 6F 00 6D 00 00 00 00 ***00 01 02 03 04 04***
 
@@ -127,6 +128,8 @@ What you see below is the decrypted payload of our packet (now with the padding 
 00 1C 00 00 00 40 00 00 00 00 03 00 00 00 0C 61 00 69 00 2E 00 6B 00 6F 00 6D 00 00 00 00 10 6D 00 61 00 69 00 
 6E 00 2E 00 65 00 78 00 65 00 00 00 00 14 73 00 63 00 72 00 69 00 70 00 74 00 2E 00 6B 00 6F 00 6D 00 00 00 00
 ```
+As previously stated, when decrypted, it's the holder of the most important data in all the packet.
+
 Like the packet buffer, the decrypted payload has its sections: the header, the content and the null bytes padding. Again, let's explain them one by one.
 
 ### Header
@@ -135,6 +138,7 @@ Like the packet buffer, the decrypted payload has its sections: the header, the 
 The payload header contains three essential informations: packet ID, content size and compression flag. Next, we will take a closer look at these values.
 > Note: unlike the header, all the data in the payload is written in the [big-endian](https://en.wikipedia.org/wiki/Endianness#Big-endian) format.
 
+___
 ***ID***
 > ***00 1C*** 00 00 00 40 00
 
@@ -147,4 +151,21 @@ ___
 
 This is the size in bytes of the _content_ of the payload. In our case, it is _00 00 00 40_ in hex values, denoting that the size is _64_ in decimal. Check for yourself: count each byte from the 8th to the 4th last byte. Your count should reach 64.
 ___
+***Compression Flag***
+> 00 1C 00 00 00 40 ***00***
+
+The _compression flag_ is a boolean value that indicates whether the content data is compressed or not. When it is _true_ (***01***), it means the data is compressed. Otherwise, it is _false_ (***00***) and indicates that the data is uncompressed, which is the case of our packet.
+
+### Content
+> 00 00 00 03 00 00 00 0C 61 00 69 00 2E 00 6B 00 6F 00 6D 00 00 00 00 10 6D 00 61 00 69 00 6E 00 
+  2E 00 65 00 78 00 65 00 00 00 00 14 73 00 63 00 72 00 69 00 70 00 74 00 2E 00 6B 00 6F 00 6D 00
+  
+Basically, the content is the message in its rawest state. It's actually the information that the packet really is intended to transmit. Let's take a closer look at our content:
+
+[IMG]
+
+Its structure will vary for each packet type, but there's yet one "pattern". See the "highlighted" bytes below.
+> 00 00 00 03 [ ***00 00 00 0C*** ] [ ***61 00 69 00 2E 00 6B 00 6F 00 6D 00*** ] 00 00 00 10 6D 00 61 00 69 00 6E 00 
+  2E 00 65 00 78 00 65 00 00 00 00 14 73 00 63 00 72 00 69 00 70 00 74 00 2E 00 6B 00 6F 00 6D 00
+  
 [Under construction!]
