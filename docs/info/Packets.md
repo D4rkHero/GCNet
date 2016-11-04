@@ -4,7 +4,7 @@ This topic will cover the Grand Chase's networking by explaining the packets' st
 * [The Overall Structure](https://github.com/syntax-dev-br/GCNet/blob/doc-test/docs/info/Packets.md#the-overall-structure)
 * [The Encryption](https://github.com/syntax-dev-br/GCNet/blob/doc-test/docs/info/Packets.md#the-encryption)
 * [The Payload](https://github.com/syntax-dev-br/GCNet/blob/doc-test/docs/info/Packets.md#the-payload)
-* [The Beginning of the Session](ttps://github.com/syntax-dev-br/GCNet/blob/doc-test/docs/info/Packets.md#the-beginning-of-the-session)
+* [The Beginning of the Session](https://github.com/syntax-dev-br/GCNet/blob/doc-test/docs/info/Packets.md#the-beginning-of-the-session)
 
 ## **The Overall Structure**
 In Grand Chase, the packets are divided primarily into three sections: header, payload and authentication code. Let's explain them one by one.
