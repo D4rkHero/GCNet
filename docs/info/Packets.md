@@ -4,14 +4,14 @@ This topic will cover the Grand Chase's networking by explaining the packets' st
 * [The Overall Structure](https://github.com/syntax-dev-br/GCNet/blob/doc-test/docs/info/Packets.md#the-overall-structure)
 * [The Encryption](https://github.com/syntax-dev-br/GCNet/blob/doc-test/docs/info/Packets.md#the-encryption)
 * [The Payload](https://github.com/syntax-dev-br/GCNet/blob/doc-test/docs/info/Packets.md#the-payload)
-* The "First" Packet
+* [The Beginning of the Session](ttps://github.com/syntax-dev-br/GCNet/blob/doc-test/docs/info/Packets.md#the-beginning-of-the-session)
 
 ## **The Overall Structure**
 In Grand Chase, the packets are divided primarily into three sections: header, payload and authentication code. Let's explain them one by one.
 
 > For demonstration purposes, we will be using the acknowledgement packet SHA_FILENAME_LIST (ID: 0x001C).
 
-If we had sniffed this packet, its raw data would look like this:
+If we had sniffed this packet, its data would look like this:
 ```
 6A 00 E7 8E 02 00 00 00 58 58 58 58 58 58 58 58 CD 05 A5 3D 7B 8C 1D CD 03 15 B1 DE 85 36 72 D9 1F B6 03 7D 77
 5A 01 BE 78 D4 0A 22 EB 63 BB D1 77 D2 C6 9F DB 17 BC 0A E2 CF D8 75 B2 9E 2E 30 DD 24 3E AA 3E 5B 90 FE 61 F2
@@ -57,7 +57,7 @@ Located between the 16 first (header) and the 10 last (auth code) bytes, this is
 Represented by the last 10 bytes of the buffer, this is the portion of the packet which is meant to assure the authenticity of the rest. In Grand Chase, it consists in a [MD5](https://en.wikipedia.org/wiki/MD5)-[HMAC](https://en.wikipedia.org/wiki/Hash-based_message_authentication_code) (Hash-based Message Authentication Code). 
 > 6A 00 ***E7 8E 02 00 00 00 58 58 58 58 58 58 58 58 CD 05 A5 3D 7B 8C 1D CD 03 15 B1 DE 85 36 72 D9 1F B6 03 7D 77 5A 01 BE 78 D4 0A 22 EB 63 BB D1 77 D2 C6 9F DB 17 BC 0A E2 CF D8 75 B2 9E 2E 30 DD 24 3E AA 3E 5B 90 FE 61 F2 C2 D1 05 A7 1C FD 9E 1B 69 A3 76 CE 3A 9D 69 21 21 9B 82 D7 00 DF*** E3 57 33 57 A6 79 A3 F6 53 57
 
-The authentication code calculation is done based on the portion of the packet's buffer shown above (from the first byte after the packet size until the last byte of the encrypted payload). The calculation also takes an auth key which is defined at the beginning of the networking session. It will be better detailed in the [last section]().
+The authentication code calculation is done based on the portion of the packet's buffer shown above (from the first byte after the packet size until the last byte of the encrypted payload). The calculation also takes an 8-byte auth key which is defined at the beginning of the networking session. It will be better detailed in the [last section]().
 
 Normally, a MD5-HMAC would have a size of 16 bytes. But if we take a look at our packet's HMAC we will realize it's only 10 byte long. That's because the game truncates the hash to leave it with the size of ten bytes.
 > ***E3 57 33 57 A6 79 A3 F6 53 57*** 10 17 F0 5F 40 F1
@@ -69,7 +69,7 @@ Above, you can see the entire HMAC (everything) compared to the part present in 
 
 The payloads of the Grand Chase's packets are encrypted using the [DES algorithm](https://en.wikipedia.org/wiki/Data_Encryption_Standard) through the [CBC mode](https://en.wikipedia.org/wiki/Block_cipher_mode_of_operation#Cipher_Block_Chaining_.28CBC.29) (Cipher Block Chaining mode). 
 
-The encryption process, as well as the decryption, once DES is a symmetric key algorithm, takes an _IV_, a _key_ and a _plaintext_.
+The encryption process, as well as the decryption, once DES is a symmetric key algorithm, takes an _IV_, a 8-byte _key_ and a _plaintext_.
 * As pointed before, the IV is generated for each packet and is sent together with it;
 * The encryption key is defined at the start of the session like the auth key;
 * The plaintext is the unencrypted payload;
@@ -131,6 +131,7 @@ What you see below is the decrypted payload of our packet (now with the padding 
 As previously stated, it's the holder of the most important data in all the packet.
 
 Like the packet buffer, the decrypted payload has its sections: the header, the content and the null bytes padding. Again, let's explain them one by one.
+> Note: there are some exceptions to this division like the ping packet, whose payload contains only null bytes.
 
 ### Header
 > 00 1C 00 00 00 40 00
@@ -186,8 +187,44 @@ Let's take a look at one compressed payload.
 
 Actually, only the highlighted portion is compressed: the header plus 4 bytes remains uncompressed, as well as the _00 00 00_ padding at the end.
 
-After the data is decompressed, it "become a normal packet" and may be read normally.
+After the data is decompressed, it "becomes a normal packet" and may be read normally.
+
+## **The Beginning of the Session**
+
+In this section we will be discussing something very important: the beginning of a Grand Chase networking session. More specifically, the packet where the keys are set up.
+
+In Grand Chase, the encryption and auth keys for the session are defined by the server and are sent to the client in the packet of ID 0x0001, which is the first packet with any information sent. Its data would look like this one:
+
+> Note: the packet exposed here is from the season eternal. Haven't checked the packets from other seasons, but it may be different.
+
+```
+52 00 00 00 31 18 00 00 59 59 59 59 59 59 59 59 91 98 7C 57 C3 D1 13 CE 9C 97 AC 0C 31 B0 79 78 DC AF 50 F4 F1 B0
+61 9F 95 E3 0F DE 22 32 19 6A 86 FA B6 28 12 F4 1A E8 BC 40 02 84 0E 19 BF C6 46 26 3E 96 FA 52 6B 64 A2 3C 82 90
+2C 9E 32 BB DA 8D
+```
+First, let's talk about two things: the _prefix_ and the _count_.
+
+* **Prefix**: in the first packet, the prefix isn't a random number. Instead, it is always _00 00_;
+* **Count**: in the first packet, (obviously) the count does not measure the quantity of the packets sent.
+
+> Note: _I still have my doubts about what the count represents in the first packet. It doesn't seem to be a random value. What I know at moment is that if it is 00 00 00 00, the client does not acknowledge the packet. It just a matter of time until I get a clearer idea about this, I just need to analyze some more samples of this type of packet_
+
+You may be wondering: "If the session keys are inside the encrypted data, what keys were used to encrypt the packet and generate the auth code for the first packet?"
+
+For this packet, Grand Chase uses two default keys which are stored by both client and server:
+
+* **Default Encryption Key:** C7 D8 C4 BF B5 E9 C0 FD
+* **Default Auth Key:** C0 D3 BD C3 B7 CE B8 B8
+
+Having it explained, let's now analyze the packet payload.
+> ![](http://i.imgur.com/nISFz3e.png?1)
+
+From here, it's like any other packet: it has a header, a content and 3 null bytes at the end. 
+
+The highlighted values are the auth and encryption keys defined for the rest of networking session. In our case:
+
+* **The part in purple is the authentication key**: C9 F8 7C 96 04 9C 1E BE
+* **The part in red is the encryption key**: FA DE 9C F3 13 91 C8 38
 
 
-
-[Under construction!]
+And for now, that's all :smile:
