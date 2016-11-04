@@ -65,4 +65,4 @@ Actually, only the highlighted portion is compressed: the header plus 4 bytes re
 
 After the data is decompressed, it "becomes a normal packet" and may be read normally.
 
-Further reading: 
+Further reading: [The Beginning of the Session](./The%20Beginning%20of%20the%20Session.md#the-beginning-of-the-session)
