@@ -157,15 +157,18 @@ ___
 The _compression flag_ is a boolean value that indicates whether the content data is compressed or not. When it is _true_ (***01***), it means the data is compressed. Otherwise, it is _false_ (***00***) and indicates that the data is uncompressed, which is the case of our packet.
 
 ### Content
-> 00 00 00 03 00 00 00 0C 61 00 69 00 2E 00 6B 00 6F 00 6D 00 00 00 00 10 6D 00 61 00 69 00 6E 00 
-  2E 00 65 00 78 00 65 00 00 00 00 14 73 00 63 00 72 00 69 00 70 00 74 00 2E 00 6B 00 6F 00 6D 00
+> ![](http://image.prntscr.com/image/ec3c97561f4a427693a1a08e90f4ef5e.png)
   
 Basically, the content is the message in its rawest state. It's actually the information that the packet really is intended to transmit. Let's take a closer look at our content:
 
-[IMG]
 
-Its structure will vary for each packet type, but there's yet one "pattern". See the "highlighted" bytes below.
-> 00 00 00 03 [ ***00 00 00 0C*** ] [ ***61 00 69 00 2E 00 6B 00 6F 00 6D 00*** ] 00 00 00 10 6D 00 61 00 69 00 6E 00 
-  2E 00 65 00 78 00 65 00 00 00 00 14 73 00 63 00 72 00 69 00 70 00 74 00 2E 00 6B 00 6F 00 6D 00
+
+Its structure will vary for each packet type, but there's yet one common "pattern". Taking the "main.exe" value as example, see what follows.
+
+> ![](http://image.prntscr.com/image/276d51bc2b4e4b2e820c1abefad4ab21.png)
   
+The portion marked in purple is an [unicode](https://en.wikipedia.org/wiki/Unicode) string which represents the filename _main.exe_. But what about the piece in red _00 00 00 10_? It is an 4-byte integer that represents the size of the following value. In decimal, _10_ is _16_, which is exactly our string's size in bytes.
+
+But remember: there may be values that aren't preceded by its size!
+
 [Under construction!]
